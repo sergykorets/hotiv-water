@@ -1,0 +1,31 @@
+.pagination a:first-child {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.pagination a:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.pagination a {
+  border: 1px solid #ddd;
+  padding: 10px 20px;
+  color: black;
+}
+.pagination .active a {
+  background: white;
+}
+.pagination {
+  margin-top: 30px;
+  margin-right: auto;
+  .active {
+    a {
+      color: red;
+    }
+  }
+}
+.paginator {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
