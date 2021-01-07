@@ -24,13 +24,13 @@ var DateHeader = function DateHeader(_ref) {
   }, label);
 };
 
-DateHeader.propTypes = {
+DateHeader.propTypes = process.env.NODE_ENV !== "production" ? {
   label: _propTypes.default.node,
   date: _propTypes.default.instanceOf(Date),
   drilldownView: _propTypes.default.string,
   onDrillDown: _propTypes.default.func,
   isOffRange: _propTypes.default.bool
-};
+} : {};
 var _default = DateHeader;
 exports.default = _default;
 module.exports = exports["default"];

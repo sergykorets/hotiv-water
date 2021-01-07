@@ -1,6 +1,90 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [4.0.1](https://github.com/webpack-contrib/compression-webpack-plugin/compare/v4.0.0...v4.0.1) (2020-08-12)
+
+
+### Bug Fixes
+
+* cache invalidation ([025b778](https://github.com/webpack-contrib/compression-webpack-plugin/commit/025b778fdcd43681dac3b9a693b375d6abf79852))
+* memory leak ([#174](https://github.com/webpack-contrib/compression-webpack-plugin/issues/174)) ([2a1e884](https://github.com/webpack-contrib/compression-webpack-plugin/commit/2a1e884a7f6781e13e08d82c10d244eb1868cd55))
+
+## [4.0.0](https://github.com/webpack-contrib/compression-webpack-plugin/compare/v3.1.0...v4.0.0) (2020-05-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* the `cache` is `true` by default for webpack@4
+* the `cache` option is ignored in webpack 5. Please use https://webpack.js.org/configuration/other-options/#cache.
+* minimum supported Node.js version is `10.13`
+
+### Features
+
+* enable cache by default for webpack@4 ([#164](https://github.com/webpack-contrib/compression-webpack-plugin/issues/164)) ([ea33463](https://github.com/webpack-contrib/compression-webpack-plugin/commit/ea33463b2c9986fa5dc744bd2860620af7404a7f))
+
+
+### Bug Fixes
+
+* behaviour in watch mode ([e222c4e](https://github.com/webpack-contrib/compression-webpack-plugin/commit/e222c4ee7554c0d3ce3a80749b6087b40ffd5ed1))
+
+## [3.1.0](https://github.com/webpack-contrib/compression-webpack-plugin/compare/v3.0.0...v3.1.0) (2020-01-09)
+
+
+### Features
+
+* add `dir`, `name` and `ext` placeholders in filename option ([#144](https://github.com/webpack-contrib/compression-webpack-plugin/issues/144)) ([bf22024](https://github.com/webpack-contrib/compression-webpack-plugin/commit/bf220243bdf74595dfe97b055a8424f7365fc866))
+
+
+### Bug Fixes
+
+* support webpack@5 ([#146](https://github.com/webpack-contrib/compression-webpack-plugin/issues/146)) ([17c29a5](https://github.com/webpack-contrib/compression-webpack-plugin/commit/17c29a557743a82d0a4ac10a98c8dc90a1aef64b))
+
+## [3.0.0](https://github.com/webpack-contrib/compression-webpack-plugin/compare/v2.0.0...v3.0.0) (2019-06-05)
+
+
+### chore
+
+* **deps:** update ([#124](https://github.com/webpack-contrib/compression-webpack-plugin/issues/124)) ([897bd95](https://github.com/webpack-contrib/compression-webpack-plugin/commit/897bd95))
+
+
+### Tests
+
+* validation ([#111](https://github.com/webpack-contrib/compression-webpack-plugin/issues/111)) ([833e825](https://github.com/webpack-contrib/compression-webpack-plugin/commit/833e825))
+
+
+### BREAKING CHANGES
+
+* **deps:** minimum required nodejs version is `8.9.0`
+
+
+
+<a name="2.0.0"></a>
+## [2.0.0](https://github.com/webpack-contrib/compression-webpack-plugin/compare/v1.1.12...v2.0.0) (2018-09-04)
+
+### Features
+
+* `filename` option now accept `{String}` value
+* validation schema for plugin options
+
+### BREAKING CHANGES
+
+* enforces `peerDependencies` of `"webpack": "^4.3.0"`
+* enforces `engines` of `"node": ">= 6.9.0 <7.0.0 || >= 8.9.0`
+* compressed options (`options.level`, `options.flush`, `options.dictionary` and etc) grouped into `compressionOptions` option
+* `asset` option was removed (use `filename` option instead)
+* default value of `filename` option is now `[path].gz[query]`
+
+
+
+<a name="1.1.12"></a>
+## [1.1.12](https://github.com/webpack-contrib/compression-webpack-plugin/compare/v1.1.11...v1.1.12) (2018-08-29)
+
+### Bug Fixes
+
+* correct handling filename with `query` ([#105](https://github.com/webpack-contrib/compression-webpack-plugin/issues/105)) ([c8d7757](https://github.com/webpack-contrib/compression-webpack-plugin/commit/c8d7757))
+
+
 
 <a name="1.1.11"></a>
 ## [1.1.11](https://github.com/webpack-contrib/compression-webpack-plugin/compare/v1.1.10...v1.1.11) (2018-03-09)

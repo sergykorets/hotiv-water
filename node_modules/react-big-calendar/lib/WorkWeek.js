@@ -50,9 +50,9 @@ function (_React$Component) {
   return WorkWeek;
 }(_react.default.Component);
 
-WorkWeek.propTypes = {
+WorkWeek.propTypes = process.env.NODE_ENV !== "production" ? {
   date: _propTypes.default.instanceOf(Date).isRequired
-};
+} : {};
 WorkWeek.defaultProps = _TimeGrid.default.defaultProps;
 WorkWeek.range = workWeekRange;
 WorkWeek.navigate = _Week.default.navigate;

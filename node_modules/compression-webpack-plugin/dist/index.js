@@ -1,240 +1,278 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     MIT License http://www.opensource.org/licenses/mit-license.php
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Author Tobias Koppers @sokra
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     */
+var _crypto = _interopRequireDefault(require("crypto"));
 
+var _url = _interopRequireDefault(require("url"));
 
-var _crypto = require('crypto');
+var _path = _interopRequireDefault(require("path"));
 
-var _crypto2 = _interopRequireDefault(_crypto);
+var _RawSource = _interopRequireDefault(require("webpack-sources/lib/RawSource"));
 
-var _url = require('url');
+var _webpack = require("webpack");
 
-var _url2 = _interopRequireDefault(_url);
+var _schemaUtils = _interopRequireDefault(require("schema-utils"));
 
-var _neoAsync = require('neo-async');
+var _package = _interopRequireDefault(require("../package.json"));
 
-var _neoAsync2 = _interopRequireDefault(_neoAsync);
-
-var _RawSource = require('webpack-sources/lib/RawSource');
-
-var _RawSource2 = _interopRequireDefault(_RawSource);
-
-var _ModuleFilenameHelpers = require('webpack/lib/ModuleFilenameHelpers');
-
-var _ModuleFilenameHelpers2 = _interopRequireDefault(_ModuleFilenameHelpers);
-
-var _cacache = require('cacache');
-
-var _cacache2 = _interopRequireDefault(_cacache);
-
-var _findCacheDir = require('find-cache-dir');
-
-var _findCacheDir2 = _interopRequireDefault(_findCacheDir);
-
-var _serializeJavascript = require('serialize-javascript');
-
-var _serializeJavascript2 = _interopRequireDefault(_serializeJavascript);
-
-var _package = require('../package.json');
-
-var _package2 = _interopRequireDefault(_package);
+var _options = _interopRequireDefault(require("./options.json"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var CompressionPlugin = function () {
-  function CompressionPlugin() {
-    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    _classCallCheck(this, CompressionPlugin);
-
-    var _options$asset = options.asset,
-        asset = _options$asset === undefined ? '[path].gz[query]' : _options$asset,
-        test = options.test,
-        include = options.include,
-        exclude = options.exclude,
-        _options$algorithm = options.algorithm,
-        algorithm = _options$algorithm === undefined ? 'gzip' : _options$algorithm,
-        _options$filename = options.filename,
-        filename = _options$filename === undefined ? false : _options$filename,
-        _options$compressionO = options.compressionOptions,
-        compressionOptions = _options$compressionO === undefined ? {} : _options$compressionO,
-        _options$cache = options.cache,
-        cache = _options$cache === undefined ? false : _options$cache,
-        _options$threshold = options.threshold,
-        threshold = _options$threshold === undefined ? 0 : _options$threshold,
-        _options$minRatio = options.minRatio,
-        minRatio = _options$minRatio === undefined ? 0.8 : _options$minRatio,
-        _options$deleteOrigin = options.deleteOriginalAssets,
-        deleteOriginalAssets = _options$deleteOrigin === undefined ? false : _options$deleteOrigin;
-
-
-    this.options = {
-      asset,
+/*
+MIT License http://www.opensource.org/licenses/mit-license.php
+Author Tobias Koppers @sokra
+*/
+class CompressionPlugin {
+  constructor(options = {}) {
+    (0, _schemaUtils.default)(_options.default, options, {
+      name: 'Compression Plugin',
+      baseDataPath: 'options'
+    });
+    const {
       test,
       include,
       exclude,
-      algorithm,
-      filename,
-      compressionOptions,
+      cache = true,
+      algorithm = 'gzip',
+      compressionOptions = {},
+      filename = '[path].gz[query]',
+      threshold = 0,
+      minRatio = 0.8,
+      deleteOriginalAssets = false
+    } = options;
+    this.options = {
+      test,
+      include,
+      exclude,
       cache,
+      algorithm,
+      compressionOptions,
+      filename,
       threshold,
       minRatio,
       deleteOriginalAssets
     };
+    this.algorithm = this.options.algorithm;
+    this.compressionOptions = this.options.compressionOptions;
 
-    if (typeof algorithm === 'string') {
+    if (typeof this.algorithm === 'string') {
       // eslint-disable-next-line global-require
-      var zlib = require('zlib');
-      this.options.algorithm = zlib[this.options.algorithm];
+      const zlib = require('zlib');
 
-      if (!this.options.algorithm) {
-        throw new Error('Algorithm not found in zlib');
+      this.algorithm = zlib[this.algorithm];
+
+      if (!this.algorithm) {
+        throw new Error(`Algorithm "${this.options.algorithm}" is not found in zlib`);
       }
 
-      this.options.compressionOptions = {
-        level: options.level || 9,
-        flush: options.flush,
-        chunkSize: options.chunkSize,
-        windowBits: options.windowBits,
-        memLevel: options.memLevel,
-        strategy: options.strategy,
-        dictionary: options.dictionary
+      const defaultCompressionOptions = {
+        level: 9
+      }; // TODO change this behaviour in the next major release
+
+      this.compressionOptions = { ...defaultCompressionOptions,
+        ...this.compressionOptions
       };
     }
   }
 
-  _createClass(CompressionPlugin, [{
-    key: 'apply',
-    value: function apply(compiler) {
-      var _this = this;
+  *taskGenerator(compiler, compilation, assetsCache, assetName) {
+    const assetSource = compilation.assets[assetName];
+    let input = assetSource.source();
 
-      var emit = function emit(compilation, callback) {
-        var _options = _this.options,
-            cache = _options.cache,
-            threshold = _options.threshold,
-            minRatio = _options.minRatio,
-            assetName = _options.asset,
-            filename = _options.filename,
-            deleteOriginalAssets = _options.deleteOriginalAssets;
+    if (!Buffer.isBuffer(input)) {
+      input = Buffer.from(input);
+    } // Do not emit cached assets in watch mode
 
-        var cacheDir = cache === true ? (0, _findCacheDir2.default)({ name: 'compression-webpack-plugin' }) : cache;
 
-        var assets = compilation.assets;
-        // eslint-disable-next-line consistent-return
+    if (assetsCache.get(assetSource)) {
+      yield false;
+    }
 
-        _neoAsync2.default.forEach(Object.keys(assets), function (file, cb) {
-          if (!_ModuleFilenameHelpers2.default.matchObject(_this.options, file)) {
-            return cb();
-          }
+    const originalSize = input.length;
 
-          var asset = assets[file];
-          var input = asset.source();
+    if (originalSize < this.options.threshold) {
+      yield false;
+    }
 
-          if (!Buffer.isBuffer(input)) {
-            input = Buffer.from(input);
-          }
+    const callback = taskResult => {
+      if (taskResult.error) {
+        compilation.errors.push(taskResult.error);
+        return;
+      }
 
-          var originalSize = input.length;
+      const {
+        output
+      } = taskResult;
 
-          if (originalSize < threshold) {
-            return cb();
-          }
+      if (output.length / originalSize > this.options.minRatio) {
+        return;
+      }
 
-          return Promise.resolve().then(function () {
-            if (cache) {
-              var cacheKey = (0, _serializeJavascript2.default)({
-                // Invalidate cache after upgrade `zlib` module (build-in in `nodejs`)
-                node: process.version,
-                'compression-webpack-plugin': _package2.default.version,
-                'compression-webpack-plugin-options': _this.options,
-                path: compiler.outputPath ? `${compiler.outputPath}/${file}` : file,
-                hash: _crypto2.default.createHash('md4').update(input).digest('hex')
-              });
+      const parse = _url.default.parse(assetName);
 
-              return _cacache2.default.get(cacheDir, cacheKey).then(function (result) {
-                return result.data;
-              }, function () {
-                return Promise.resolve().then(function () {
-                  return _this.compress(input);
-                }).then(function (data) {
-                  return _cacache2.default.put(cacheDir, cacheKey, data).then(function () {
-                    return data;
-                  });
-                });
-              });
-            }
+      const {
+        pathname
+      } = parse;
 
-            return _this.compress(input);
-          }).then(function (result) {
-            if (result.length / originalSize > minRatio) {
-              return cb();
-            }
+      const {
+        dir,
+        name,
+        ext
+      } = _path.default.parse(pathname);
 
-            var parse = _url2.default.parse(file);
-            var sub = {
-              file,
-              path: parse.pathname,
-              query: parse.query || ''
-            };
+      const info = {
+        file: assetName,
+        path: pathname,
+        dir: dir ? `${dir}/` : '',
+        name,
+        ext,
+        query: parse.query ? `?${parse.query}` : ''
+      };
+      const newAssetName = typeof this.options.filename === 'function' ? this.options.filename(info) : this.options.filename.replace(/\[(file|path|query|dir|name|ext)]/g, (p0, p1) => info[p1]);
+      const compressedSource = new _RawSource.default(output); // eslint-disable-next-line no-param-reassign
 
-            var newAssetName = assetName.replace(/\[(file|path|query)\]/g, function (p0, p1) {
-              return sub[p1];
-            });
+      compilation.assets[newAssetName] = compressedSource;
+      assetsCache.set(assetSource, compressedSource);
 
-            if (typeof filename === 'function') {
-              newAssetName = filename(newAssetName);
-            }
+      if (this.options.deleteOriginalAssets) {
+        // eslint-disable-next-line no-param-reassign
+        delete compilation.assets[assetName];
+      }
+    };
 
-            assets[newAssetName] = new _RawSource2.default(result);
+    const task = {
+      input,
+      filename: assetName,
+      // Invalidate cache after upgrade `zlib` module (built-in in `nodejs`)
+      cacheKeys: {
+        node: process.version
+      },
+      callback
+    };
 
-            if (deleteOriginalAssets) {
-              delete assets[file];
-            }
+    if (CompressionPlugin.isWebpack4()) {
+      task.cacheKeys = {
+        filename: assetName,
+        'compression-webpack-plugin': _package.default.version,
+        'compression-webpack-plugin-options': this.options,
+        contentHash: _crypto.default.createHash('md4').update(input).digest('hex'),
+        ...task.cacheKeys
+      };
+    } else {
+      task.assetSource = assetSource;
+    }
 
-            return cb();
-          }).catch(cb);
-        }, callback);
+    yield task;
+  }
+
+  compress(input) {
+    return new Promise((resolve, reject) => {
+      const {
+        algorithm,
+        compressionOptions
+      } = this;
+      algorithm(input, compressionOptions, (error, result) => {
+        if (error) {
+          return reject(error);
+        }
+
+        return resolve(result);
+      });
+    });
+  }
+
+  async runTasks(assetNames, getTaskForAsset, cache) {
+    const scheduledTasks = [];
+
+    for (const assetName of assetNames) {
+      const enqueue = async task => {
+        let taskResult;
+
+        try {
+          const output = await this.compress(task.input);
+          taskResult = {
+            output
+          };
+        } catch (error) {
+          taskResult = {
+            error
+          };
+        }
+
+        if (cache.isEnabled() && !taskResult.error) {
+          await cache.store(task, taskResult);
+        }
+
+        task.callback(taskResult);
+        return taskResult;
       };
 
-      if (compiler.hooks) {
-        var plugin = { name: 'CompressionPlugin' };
-        compiler.hooks.emit.tapAsync(plugin, emit);
-      } else {
-        compiler.plugin('emit', emit);
-      }
-    }
-  }, {
-    key: 'compress',
-    value: function compress(input) {
-      var _this2 = this;
+      scheduledTasks.push((async () => {
+        const task = getTaskForAsset(assetName).next().value;
 
-      return new Promise(function (resolve, reject) {
-        var _options2 = _this2.options,
-            algorithm = _options2.algorithm,
-            compressionOptions = _options2.compressionOptions;
+        if (!task) {
+          return Promise.resolve();
+        }
 
+        if (cache.isEnabled()) {
+          let taskResult;
 
-        algorithm(input, compressionOptions, function (error, result) {
-          if (error) {
-            return reject(error);
+          try {
+            taskResult = await cache.get(task);
+          } catch (ignoreError) {
+            return enqueue(task);
           }
 
-          return resolve(result);
-        });
-      });
+          task.callback(taskResult);
+          return Promise.resolve();
+        }
+
+        return enqueue(task);
+      })());
     }
-  }]);
 
-  return CompressionPlugin;
-}();
+    return Promise.all(scheduledTasks);
+  }
 
-exports.default = CompressionPlugin;
+  static isWebpack4() {
+    return _webpack.version[0] === '4';
+  }
+
+  apply(compiler) {
+    const matchObject = _webpack.ModuleFilenameHelpers.matchObject.bind( // eslint-disable-next-line no-undefined
+    undefined, this.options);
+
+    const assetsCache = new WeakMap();
+    compiler.hooks.emit.tapPromise({
+      name: 'CompressionPlugin'
+    }, async compilation => {
+      const {
+        assets
+      } = compilation;
+      const assetNames = Object.keys(assets).filter(assetName => matchObject(assetName));
+
+      if (assetNames.length === 0) {
+        return Promise.resolve();
+      }
+
+      const getTaskForAsset = this.taskGenerator.bind(this, compiler, compilation, assetsCache);
+      const CacheEngine = CompressionPlugin.isWebpack4() ? // eslint-disable-next-line global-require
+      require('./Webpack4Cache').default : // eslint-disable-next-line global-require
+      require('./Webpack5Cache').default;
+      const cache = new CacheEngine(compilation, {
+        cache: this.options.cache
+      });
+      await this.runTasks(assetNames, getTaskForAsset, cache);
+      return Promise.resolve();
+    });
+  }
+
+}
+
+var _default = CompressionPlugin;
+exports.default = _default;

@@ -37,6 +37,7 @@ export default class AirBnbPicker extends React.Component {
             date={this.state.date}
             placeholder='Дата'
             focused={this.state.focused}
+            numberOfMonths={1}
             onDateChange={date => this.onDateChange({ date })}
             onFocusChange={({ focused }) => this.setState({ focused })}
             id="your_unique_id"
