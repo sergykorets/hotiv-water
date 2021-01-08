@@ -59,7 +59,7 @@
 }
 .SingleDatePicker {
   width: 100%;
-  font-size: large !important;
+  font-size: x-large !important;
   .SingleDatePickerInput {
     width: 100%;
     .DateInput {
@@ -126,7 +126,7 @@ body {
       font-size: smaller;
     }
     input {
-      font-size: large !important;
+      font-size: 30px !important;
     }
     .cash {
       margin-top: 1rem;
@@ -141,5 +141,10 @@ body {
   }
   .show-action-details {
     max-width: none;
+  }
+}
+@media (max-width: 1000px) {
+  body, .CalendarMonth, .CalendarDay {
+    font-size: 30px !important;
   }
 }

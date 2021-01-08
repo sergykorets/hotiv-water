@@ -7,6 +7,8 @@ import SystemButtons from '../components/SystemButtons';
 import Actions from '../components/Actions';
 import EditAction from '../components/Actions/edit';
 import Reservations from '../components/Reservations';
+import Table from '../components/Reservations/table';
+import Users from '../components/Users';
 
 // This is how react_on_rails can see the HelloWorld in the browser.
 ReactOnRails.register({
@@ -17,5 +19,7 @@ ReactOnRails.register({
   SystemButtons,
   Actions,
   EditAction,
-  Reservations
+  Reservations,
+  Table,
+  Users
 });

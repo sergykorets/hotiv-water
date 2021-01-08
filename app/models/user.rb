@@ -6,7 +6,7 @@ class User < ApplicationRecord
 
   enum role: [:cashier, :admin]
 
-  has_many :actions
+  has_many :reservations
 
   def update_without_password(params, *options)
     if params[:password].blank?

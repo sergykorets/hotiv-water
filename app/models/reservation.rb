@@ -8,8 +8,8 @@ class Reservation < ApplicationRecord
   validate :check_availability
   validate :check_dates
 
-  scope :current_month, -> {where('start_date < ? AND end_date > ?', DateTime.now.end_of_month, DateTime.now.beginning_of_month)}
-  scope :for_dates, -> (start_date, end_date) {where('start_date <= ? AND end_date >= ?', end_date || DateTime.now.end_of_month, start_date || DateTime.now.beginning_of_month)}
+  scope :current_month, -> {where('start_date < ? AND end_date > ?', DateTime.now.end_of_month, DateTime.now.beginning_of_month).order('start_date DESC')}
+  scope :for_dates, -> (start_date, end_date) {where('start_date <= ? AND end_date >= ?', end_date || DateTime.now.end_of_month, start_date || DateTime.now.beginning_of_month).order('start_date DESC')}
 
   private
 

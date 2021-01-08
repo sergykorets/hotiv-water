@@ -14,7 +14,7 @@ export default class Reservations extends React.Component {
     moment.locale('uk');
 
     this.state = {
-      users: [],
+      users: this.props.users,
       reservations: this.props.reservations,
       openedModal: '',
       selectedReservation: {
@@ -132,46 +132,49 @@ export default class Reservations extends React.Component {
   handleSubmitReservation = () => {
     const services = Object.entries(this.state.selectedReservation.services).filter(([, v]) => v == true).map(([k]) => k);
     const url = this.state.selectedReservation.id ? `/reservations/${this.state.selectedReservation.id}.json` : `reservations.json`
-    const action = this.state.selectedReservation.id ? 'PATCH' : 'POST'
-    $.ajax({
-      url: url,
-      type: action,
-      data: {
-        reservation: {
-          user_id: this.state.selectedReservation.user.value,
-          status: this.state.selectedReservation.status,
-          description: this.state.selectedReservation.description,
-          start_date: this.state.selectedReservation.date + ' ' + moment(this.state.selectedReservation.startTime).format('HH:mm'),
-          end_date: this.state.selectedReservation.date + ' ' + moment(this.state.selectedReservation.endTime).format('HH:mm'),
-          status: this.state.selectedReservation.status,
-          price: this.state.selectedReservation.price,
-          service_ids: services.length == 0 ? [' '] : services
-        }
-      }
-    }).then((resp) => {
-      if (resp.success) {
-        this.setState({
-          ...this.state,
-          reservations: resp.reservations,
-          openedModal: '',
-          selectedReservation: {
-            id: '',
-            user: {},
-            status: '',
-            description: '',
-            date: '',
-            startTime: moment("08:00", "HH:mm"),
-            endTime: moment("09:00", "HH:mm"),
-            price: '',
-            services: this.props.services.reduce((obj, item) => (obj[item.id] = false, obj), {})
+    const action = this.state.selectedReservation.id ? 'PATCH' : 'POST';
+    if (this.state.selectedReservation.date.length == 0) {
+      NotificationManager.error('Дата не може бути пустою', 'Неможливо зробити дію');
+    } else {
+      $.ajax({
+        url: url,
+        type: action,
+        data: {
+          reservation: {
+            user_id: this.state.selectedReservation.user.value,
+            status: this.state.selectedReservation.status,
+            description: this.state.selectedReservation.description,
+            start_date: this.state.selectedReservation.date + ' ' + moment(this.state.selectedReservation.startTime).format('HH:mm'),
+            end_date: this.state.selectedReservation.date + ' ' + moment(this.state.selectedReservation.endTime).format('HH:mm'),
+            price: this.state.selectedReservation.price,
+            service_ids: services.length == 0 ? [' '] : services
           }
-        })
-        NotificationManager.success(resp.update ? 'Запис відредаговано' : 'Запис створено');
-      } else {
-        NotificationManager.error(resp.error, 'Неможливо створити');
-      }
-    });
-  }
+        }
+      }).then((resp) => {
+        if (resp.success) {
+          this.setState({
+            ...this.state,
+            reservations: resp.reservations,
+            openedModal: '',
+            selectedReservation: {
+              id: '',
+              user: {},
+              status: '',
+              description: '',
+              date: '',
+              startTime: moment("08:00", "HH:mm"),
+              endTime: moment("09:00", "HH:mm"),
+              price: '',
+              services: this.props.services.reduce((obj, item) => (obj[item.id] = false, obj), {})
+            }
+          })
+          NotificationManager.success(resp.update ? 'Запис відредаговано' : 'Запис створено');
+        } else {
+          NotificationManager.error(resp.error, resp.update ? 'Неможливо відредагувати' : 'Неможливо створити');
+        }
+      });
+    }
+  };
 
   handleSelectEvent = (reservation) => {
     this.setState({
@@ -188,7 +191,7 @@ export default class Reservations extends React.Component {
         services: reservation.services.reduce((obj, item) => (obj[item.id] = true, obj), {})
       }
     })
-  }
+  };
 
   handleReservationUserChange = (user) => {
     this.setState({
@@ -198,7 +201,7 @@ export default class Reservations extends React.Component {
         user: user
       }
     });
-  }
+  };
 
   handleDeleteReservation = () => {
     if (confirm('Видалити запис?')) {
@@ -229,18 +232,17 @@ export default class Reservations extends React.Component {
         }
       })
     }
-  }
+  };
 
   render() {
-    const localizer = momentLocalizer(moment)
+    const localizer = momentLocalizer(moment);
     const dates = this.state.reservations.map((r,i) => {
       r.start = new Date(r.start),
       r.end   = new Date(r.end)
       return r;
-    })
-    console.log({state: this.state, props: this.props})
+    });
     return (
-      <div style={{marginTop: '100'+'px', padding: 10+'px'}}>
+      <div style={{marginTop: '150'+'px', padding: 10+'px'}}>
         <NotificationContainer/>
         <Calendar
           views={['month', 'day']}
@@ -341,7 +343,7 @@ export default class Reservations extends React.Component {
                 <FormGroup tag="fieldset">
                   { this.props.services.map((s,i) => {
                     return (
-                      <Fragment>
+                      <Fragment key={i}>
                         <hr/>
                         <FormGroup key={i} check>
                           <div className='service-block'>

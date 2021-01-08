@@ -59,7 +59,7 @@ export default class AirBnbPicker extends React.Component {
             endDateId="your_unique_end_date_id"
             onDatesChange={this.onDatesChange}
             focusedInput={this.state.focusedInput}
-            isOutsideRange={day => this.props.allowPastDates ? false : moment().diff(day) > 0}
+            isOutsideRange={day => this.props.pastDates ? false : moment().diff(day) > 0}
             onFocusChange={focusedInput => this.setState({focusedInput})}
             isDayBlocked={this.state.focusedInput && this.state.focusedInput === 'endDate' ? day => false : this.props.isDayBlocked}
           />}

@@ -18,8 +18,9 @@ Rails.application.routes.draw do
   resources :categories, only: :create
   resources :actions, only: [:index, :create, :edit, :update, :destroy]
   resources :reservations
-  resources :users
+  resources :users, only: [:index, :show]
 
+  get '/table', to: 'reservations#table'
   get '/sell', to: 'pages#sell'
   get '/copy_db', to: 'application#copy_db'
   get '/update_db', to: 'application#update_db'

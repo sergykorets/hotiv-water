@@ -349,11 +349,11 @@
 .profile-stat:after {
   color: #999;
 }
-.works::after {
-  content: "Перемоги";
+.spent::after {
+  content: "Потрачено";
 }
-.followers::after {
-  content: "Подіуми";
+.visits::after {
+  content: "Візити";
 }
 .following::after {
   content: "Фінали";
@@ -520,4 +520,14 @@
 .reservation-form {
   height: calc(100vh - 275px);
   overflow-y: scroll;
+}
+.rbc-toolbar {
+  font-size: 30px !important;
+  margin-bottom: 50px !important;
+}
+.rbc-timeslot-group {
+  min-height: 70px !important;
+}
+.rbc-show-more {
+  color: #2c6ed5;
 }

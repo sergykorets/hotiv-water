@@ -10,10 +10,13 @@
           <%= devise_error_messages! %>
           <%#= f.hidden_field :role, value: :racer %>
           <div class="input-group">
-            <%= f.email_field :email, autocomplete: "email", class: 'input--style-3', placeholder: 'Email'  %>
+            <%= f.email_field :email, autocomplete: "email", autofocus: true, class: 'input--style-3', placeholder: 'Email'  %>
           </div>
           <div class="input-group">
-            <%= f.text_field :name, value: params[:name], autofocus: true, class: 'input--style-3', placeholder: "Ім'я"  %>
+            <%= f.text_field :name, value: params[:name], class: 'input--style-3', placeholder: "Ім'я"  %>
+          </div>
+          <div class="input-group">
+            <%= f.text_field :phone, value: '+380', class: 'input--style-3', placeholder: "Телефон"  %>
           </div>
           <div class="input-group">
             <%= f.password_field :password, autocomplete: "off", class: 'input--style-3', placeholder: 'Пароль' %>

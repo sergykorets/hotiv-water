@@ -114,7 +114,7 @@ button.rbc-input::-moz-focus-inner {
   -ms-flex-align: center;
   align-items: center;
   margin-bottom: 10px;
-  font-size: 16px;
+  font-size: 30px;
 }
 .rbc-toolbar .rbc-toolbar-label {
   -webkit-flex-grow: 1;
