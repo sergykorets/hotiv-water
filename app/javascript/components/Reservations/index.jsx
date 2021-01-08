@@ -259,12 +259,9 @@ export default class Reservations extends React.Component {
         <i className="fa fa-plus-circle" onClick={() => this.handleModal('createModal')} style={{position: 'fixed', bottom: 50, right: 50, fontSize: 200+'px'}}/>
         <Modal isOpen={this.state.openedModal.length > 0} toggle={() => this.handleModal('')}>
           <div className="container">
-            <ModalHeader className='text-center' toggle={() => this.handleModal('')}>
+            <ModalHeader toggle={() => this.handleModal('')}>
               <span style={{width: 555+'px'}}><strong>Запис на прийом</strong></span>
-              { this.state.openedModal == 'editModal' &&
-              <button className='btn btn-block btn-danger reservation-btn' onClick={this.handleDeleteReservation}>
-                Видалити
-              </button>}
+              <i className="fa fa-times" onClick={() => this.handleModal('')}/>
             </ModalHeader>
             <div className='reservation-form'>
               <div className='form-group'>
@@ -372,6 +369,10 @@ export default class Reservations extends React.Component {
               </div>
             </div>
             <ModalFooter>
+              { this.state.openedModal == 'editModal' &&
+              <button className='btn btn-block btn-danger reservation-btn' onClick={this.handleDeleteReservation}>
+                Видалити
+              </button>}
               <button className='btn btn-block btn-outline-info reservation-btn' onClick={this.handleSubmitReservation}>{this.state.openedModal == 'createModal' ? 'Створити' : 'Редагувати'}</button>
             </ModalFooter>
           </div>
