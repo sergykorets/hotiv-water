@@ -136,7 +136,7 @@ class ReservationsController < ApplicationController
     @users = User.all.map { |user| {label: user.name, value: user.id} }
     respond_to do |format|
       format.html { render :table }
-      format.json {{reservations: @reservations, services: @services }}
+      format.json {{reservations: @reservations}}
     end
   end
 

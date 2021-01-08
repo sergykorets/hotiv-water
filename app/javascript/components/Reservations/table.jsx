@@ -13,21 +13,7 @@ export default class Table extends React.Component {
       openedModal: '',
       selectedAction: '',
       startDate: moment().clone().startOf('month').format('DD.MM.YYYY'),
-      endDate: moment().clone().endOf('month').format('DD.MM.YYYY'),
-      sort: {
-        field: '',
-        descending: true
-      },
-      actionModal: {
-        id: '',
-        amount: '',
-        products: []
-      },
-      productSearch: {
-        barcode: '',
-        name: '',
-        category_id: ''
-      }
+      endDate: moment().clone().endOf('month').format('DD.MM.YYYY')
     };
   }
 
@@ -39,41 +25,20 @@ export default class Table extends React.Component {
     })
   };
 
-  cancelAction = (id) => {
-    if (window.confirm("Відмінити транзацію?")) {
-      $.ajax({
-        url: `/actions/${id}.json`,
-        type: 'DELETE'
-      }).then((resp) => {
-        if (resp.success) {
-          this.setState({
-            ...this.state,
-            actions: resp.actions
-          });
-          NotificationManager.success('Транзакцію скасовано');
-        } else {
-          NotificationManager.error(resp.error, 'Неможливо зробити дію');
-        }
-      });
-    }
-  };
-
-  isToday = () => {
-    return moment().isSame(moment(this.state.date, 'DD.MM.YYYY'), 'day')
-  };
-
-  handleDateChange = ({date}) => {
+  handleDateChange = ({startDate, endDate}) => {
     $.ajax({
-      url: '/actions.json',
+      url: '/table.json',
       type: 'GET',
       data: {
-        date: date.format('DD.MM.YYYY')
+        start_date: startDate.format('DD.MM.YYYY'),
+        end_date: endDate.format('DD.MM.YYYY')
       },
       success: (resp) => {
         this.setState({
           ...this.state,
-          actions: resp.actions,
-          date: date ? date.format('DD.MM.YYYY') : null
+          actions: resp.reservations,
+          startDate: startDate ? startDate.format('DD.MM.YYYY') : null,
+          endDate: endDate ? endDate.format('DD.MM.YYYY') : null
         });
       }
     });
@@ -85,11 +50,6 @@ export default class Table extends React.Component {
       return sumArray.push(parseFloat(action.price))
     });
     return (sumArray.reduce((a, b) => a + b, 0)).toFixed(2)
-  };
-
-  productSum = (index) => {
-    const product = this.state.actions[this.state.selectedAction].products[index];
-    return (parseFloat(product.sell_price) * parseFloat(product.quantity)).toFixed(2)
   };
 
   render() {
@@ -104,6 +64,7 @@ export default class Table extends React.Component {
           <AirBnbPicker
             single={false}
             pastDates={true}
+            oneDay={true}
             onPickerApply={this.handleDateChange}
             startDate={this.state.startDate}
             endDate={this.state.endDate}
@@ -113,7 +74,7 @@ export default class Table extends React.Component {
           <thead>
           <tr>
             <th><h1>Клієнт</h1></th>
-            <th style={{cursor: 'pointer'}} onClick={() => this.onSort('buy_price')}><h1>Сума</h1></th>
+            <th><h1>Сума</h1></th>
             <th><h1>Дата</h1></th>
             <th><h1>Послуги</h1></th>
           </tr>
