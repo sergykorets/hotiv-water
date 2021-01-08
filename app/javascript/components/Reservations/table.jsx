@@ -53,7 +53,6 @@ export default class Table extends React.Component {
   };
 
   render() {
-    console.log(this.state)
     return (
       <div className='container page-content' style={{color: 'black'}}>
         <NotificationContainer/>

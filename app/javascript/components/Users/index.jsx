@@ -32,7 +32,6 @@ export default class Users extends React.Component {
   };
 
   render() {
-    console.log(this.state)
     return (
       <div className='container page-content' style={{color: 'black'}}>
         <h1 style={{marginBottom: 20+'px'}}>Клієнти</h1>

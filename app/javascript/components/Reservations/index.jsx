@@ -310,34 +310,34 @@ export default class Reservations extends React.Component {
               </div>
               <div className='form-group'>
                 <label><strong>Додаткова інформація</strong></label>
-                <textarea type='text' className='form-control' value={this.state.selectedReservation.description} onChange={(e) => this.handleReservationChange('description', e.target.value)} />
+                <textarea rows="3" type='text' className='form-control' value={this.state.selectedReservation.description} onChange={(e) => this.handleReservationChange('description', e.target.value)} />
               </div>
               <div className='form-group'>
                 <label><strong>Статус</strong></label>
                 <hr/>
                 <FormGroup tag="fieldset">
-                  <FormGroup check>
+                  <FormGroup className={this.state.selectedReservation.status == 'paid' ? 'checked-service' : ''} check>
                     <Label check>
                       <Input type="radio" name="status" value='paid' checked={this.state.selectedReservation.status == 'paid'} onChange={(e) => this.handleReservationChange('status', e.target.value)} />{' '}
                       Оплачено
                     </Label>
                   </FormGroup>
                   <hr/>
-                  <FormGroup check>
+                  <FormGroup className={this.state.selectedReservation.status == 'not_paid' ? 'checked-service' : ''} check>
                     <Label check>
                       <Input type="radio" name="status" value='not_paid' checked={this.state.selectedReservation.status == 'not_paid'} onChange={(e) => this.handleReservationChange('status', e.target.value)}/>{' '}
                       Не оплачено
                     </Label>
                   </FormGroup>
                   <hr/>
-                  <FormGroup check disabled>
+                  <FormGroup className={this.state.selectedReservation.status == 'partialy_paid' ? 'checked-service' : ''} check>
                     <Label check>
                       <Input type="radio" name="status" value='partialy_paid' checked={this.state.selectedReservation.status == 'partialy_paid'} onChange={(e) => this.handleReservationChange('status', e.target.value)}/>{' '}
                       Частково оплачено
                     </Label>
                   </FormGroup>
                   <hr/>
-                  <FormGroup check disabled>
+                  <FormGroup className={this.state.selectedReservation.status == 'free' ? 'checked-service' : ''} check>
                     <Label check>
                       <Input type="radio" name="status" value='free' checked={this.state.selectedReservation.status == 'free'} onChange={(e) => this.handleReservationChange('status', e.target.value)}/>{' '}
                       Безкоштовно
@@ -351,7 +351,7 @@ export default class Reservations extends React.Component {
                 <FormGroup tag="fieldset">
                   { this.props.services.map((s,i) => {
                     return (
-                      <Fragment key={i}>
+                      <div className={this.state.selectedReservation.services[s.id] ? 'checked-service' : ''} key={i}>
                         <hr/>
                         <FormGroup key={i} check>
                           <div className='service-block'>
@@ -362,7 +362,7 @@ export default class Reservations extends React.Component {
                             <Input className="service-price" value={s.price} disabled/>
                           </div>
                         </FormGroup>
-                      </Fragment>
+                      </div>
                     )
                   })}
                 </FormGroup>
@@ -384,7 +384,7 @@ export default class Reservations extends React.Component {
                 <button className='btn btn-block btn-danger reservation-btn' onClick={this.handleDeleteReservation}>
                   Видалити
                 </button>}
-              <button className='btn btn-block btn-outline-info reservation-btn' onClick={this.handleSubmitReservation}>{this.state.openedModal == 'createModal' ? 'Створити' : 'Редагувати'}</button>
+              <button className='btn btn-block btn-info reservation-btn' onClick={this.handleSubmitReservation}>{this.state.openedModal == 'createModal' ? 'Створити' : 'Редагувати'}</button>
             </ModalFooter>
           </div>
         </Modal>
