@@ -1,8 +1,5 @@
 import React, {Fragment} from 'react';
-import { Modal, ModalHeader, FormGroup, Label, Input, ButtonToggle } from 'reactstrap';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
-import AirBnbPicker from '../common/AirBnbPicker';
-import moment from "moment";
 import Select from "react-select";
 
 export default class Users extends React.Component {
@@ -34,6 +31,7 @@ export default class Users extends React.Component {
   render() {
     return (
       <div className='container page-content' style={{color: 'black'}}>
+        <NotificationContainer/>
         <h1 style={{marginBottom: 20+'px'}}>Клієнти</h1>
         <div className='form-group'>
           <Select options={this.state.users}

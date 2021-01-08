@@ -117,10 +117,10 @@ export default class Reservations extends React.Component {
   };
 
   handleSubmitReservation = () => {
-    const services = Object.entries(this.state.selectedReservation.services).filter(([, v]) => v == true).map(([k]) => k);
-    const url = this.state.selectedReservation.id ? `/reservations/${this.state.selectedReservation.id}.json` : `reservations.json`
+    const services = Object.entries(this.state.selectedReservation.services).filter(([, v]) => v === true).map(([k]) => k);
+    const url = this.state.selectedReservation.id ? `/reservations/${this.state.selectedReservation.id}.json` : `reservations.json`;
     const action = this.state.selectedReservation.id ? 'PATCH' : 'POST';
-    if (this.state.selectedReservation.date.length == 0) {
+    if (this.state.selectedReservation.date.length === 0) {
       NotificationManager.error('Дата не може бути пустою', 'Неможливо зробити дію');
     } else {
       $.ajax({
@@ -134,7 +134,7 @@ export default class Reservations extends React.Component {
             start_date: this.state.selectedReservation.date + ' ' + moment(this.state.selectedReservation.startTime).format('HH:mm'),
             end_date: this.state.selectedReservation.date + ' ' + moment(this.state.selectedReservation.endTime).format('HH:mm'),
             price: this.state.selectedReservation.price,
-            service_ids: services.length == 0 ? [' '] : services
+            service_ids: services.length === 0 ? [' '] : services
           }
         }
       }).then((resp) => {
@@ -316,30 +316,30 @@ export default class Reservations extends React.Component {
                 <label><strong>Статус</strong></label>
                 <hr/>
                 <FormGroup tag="fieldset">
-                  <FormGroup className={this.state.selectedReservation.status == 'paid' ? 'checked-service' : ''} check>
+                  <FormGroup className={this.state.selectedReservation.status === 'paid' ? 'checked-service' : ''} check>
                     <Label check>
-                      <Input type="radio" name="status" value='paid' checked={this.state.selectedReservation.status == 'paid'} onChange={(e) => this.handleReservationChange('status', e.target.value)} />{' '}
+                      <Input type="radio" name="status" value='paid' checked={this.state.selectedReservation.status === 'paid'} onChange={(e) => this.handleReservationChange('status', e.target.value)} />{' '}
                       Оплачено
                     </Label>
                   </FormGroup>
                   <hr/>
-                  <FormGroup className={this.state.selectedReservation.status == 'not_paid' ? 'checked-service' : ''} check>
+                  <FormGroup className={this.state.selectedReservation.status === 'not_paid' ? 'checked-service' : ''} check>
                     <Label check>
-                      <Input type="radio" name="status" value='not_paid' checked={this.state.selectedReservation.status == 'not_paid'} onChange={(e) => this.handleReservationChange('status', e.target.value)}/>{' '}
+                      <Input type="radio" name="status" value='not_paid' checked={this.state.selectedReservation.status === 'not_paid'} onChange={(e) => this.handleReservationChange('status', e.target.value)}/>{' '}
                       Не оплачено
                     </Label>
                   </FormGroup>
                   <hr/>
-                  <FormGroup className={this.state.selectedReservation.status == 'partialy_paid' ? 'checked-service' : ''} check>
+                  <FormGroup className={this.state.selectedReservation.status === 'partialy_paid' ? 'checked-service' : ''} check>
                     <Label check>
-                      <Input type="radio" name="status" value='partialy_paid' checked={this.state.selectedReservation.status == 'partialy_paid'} onChange={(e) => this.handleReservationChange('status', e.target.value)}/>{' '}
+                      <Input type="radio" name="status" value='partialy_paid' checked={this.state.selectedReservation.status === 'partialy_paid'} onChange={(e) => this.handleReservationChange('status', e.target.value)}/>{' '}
                       Частково оплачено
                     </Label>
                   </FormGroup>
                   <hr/>
-                  <FormGroup className={this.state.selectedReservation.status == 'free' ? 'checked-service' : ''} check>
+                  <FormGroup className={this.state.selectedReservation.status === 'free' ? 'checked-service' : ''} check>
                     <Label check>
-                      <Input type="radio" name="status" value='free' checked={this.state.selectedReservation.status == 'free'} onChange={(e) => this.handleReservationChange('status', e.target.value)}/>{' '}
+                      <Input type="radio" name="status" value='free' checked={this.state.selectedReservation.status === 'free'} onChange={(e) => this.handleReservationChange('status', e.target.value)}/>{' '}
                       Безкоштовно
                     </Label>
                   </FormGroup>
@@ -380,11 +380,11 @@ export default class Reservations extends React.Component {
               </div>
             </div>
             <ModalFooter>
-              { this.state.openedModal == 'editModal' &&
+              { this.state.openedModal === 'editModal' &&
                 <button className='btn btn-block btn-danger reservation-btn' onClick={this.handleDeleteReservation}>
                   Видалити
                 </button>}
-              <button className='btn btn-block btn-info reservation-btn' onClick={this.handleSubmitReservation}>{this.state.openedModal == 'createModal' ? 'Створити' : 'Редагувати'}</button>
+              <button className='btn btn-block btn-info reservation-btn' onClick={this.handleSubmitReservation}>{this.state.openedModal === 'createModal' ? 'Створити' : 'Редагувати'}</button>
             </ModalFooter>
           </div>
         </Modal>
