@@ -223,13 +223,13 @@ export default class Reservations extends React.Component {
 
   handleServicesChange = (price, value) => {
     this.setState(prevState => {
-      const prevPrice = prevState.selectedReservation.price;
+      const prevPrice = prevState.selectedReservation.price ? parseInt(prevState.selectedReservation.price) : 0;
       const prevCheck = prevState.selectedReservation.services[value];
       let newPrice = 0;
       if (prevCheck) {
-        newPrice = prevPrice - price;
+        newPrice = prevPrice - parseInt(price);
       } else {
-        newPrice = prevPrice + price;
+        newPrice = prevPrice + parseInt(price);
       }
       return {
         ...this.state,

@@ -7,6 +7,7 @@ class Reservation < ApplicationRecord
   validates_presence_of :start_date, :end_date
   validate :check_availability
   validate :check_dates
+  validates :price, numericality: { greater_than_or_equal_to: 0 }
 
   scope :current_month, -> {where('start_date < ? AND end_date > ?', DateTime.now.end_of_month, DateTime.now.beginning_of_month).order('start_date DESC')}
   scope :for_dates, -> (start_date, end_date) {where('start_date <= ? AND end_date >= ?', end_date || DateTime.now.end_of_month, start_date || DateTime.now.beginning_of_month).order('start_date DESC')}
