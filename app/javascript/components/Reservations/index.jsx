@@ -64,7 +64,7 @@ export default class Reservations extends React.Component {
         }
       })
     }
-  }
+  };
 
   handleMonthChange = (dates) => {
     $.ajax({
@@ -82,31 +82,18 @@ export default class Reservations extends React.Component {
         })
       }
     });
-  }
+  };
 
   handleReservationChange = (field, value) => {
-    if (field == 'services') {
-      this.setState({
-        ...this.state,
-        selectedReservation: {
-          ...this.state.selectedReservation,
-          services: {
-            ...this.state.selectedReservation.services,
-            [value]: !this.state.selectedReservation.services[value]
-          }
-        }
-      })
-    } else {
-      this.setState({
-        ...this.state,
-        selectedReservation: {
-          ...this.state.selectedReservation,
-          [field]: value
-        }
-      })
-    }
+    this.setState({
+      ...this.state,
+      selectedReservation: {
+        ...this.state.selectedReservation,
+        [field]: value
+      }
+    })
   }
-
+;
   handleDateChange = ({date}) => {
     this.setState({
       ...this.state,
@@ -234,6 +221,30 @@ export default class Reservations extends React.Component {
     }
   };
 
+  handleServicesChange = (price, value) => {
+    this.setState(prevState => {
+      const prevPrice = prevState.selectedReservation.price;
+      const prevCheck = prevState.selectedReservation.services[value];
+      let newPrice = 0;
+      if (prevCheck) {
+        newPrice = prevPrice - price;
+      } else {
+        newPrice = prevPrice + price;
+      }
+      return {
+        ...this.state,
+        selectedReservation: {
+          ...this.state.selectedReservation,
+          price: newPrice,
+          services: {
+            ...this.state.selectedReservation.services,
+            [value]: !this.state.selectedReservation.services[value]
+          }
+        }
+      }
+    })
+  };
+
   render() {
     const localizer = momentLocalizer(moment);
     const dates = this.state.reservations.map((r,i) => {
@@ -345,7 +356,7 @@ export default class Reservations extends React.Component {
                         <FormGroup key={i} check>
                           <div className='service-block'>
                             <Label check>
-                              <Input type="checkbox" value={s.id} checked={this.state.selectedReservation.services[s.id]} onChange={(e) => this.handleReservationChange('services', e.target.value)}/>{' '}
+                              <Input type="checkbox" value={s.id} checked={this.state.selectedReservation.services[s.id]} onChange={(e) => this.handleServicesChange(s.price, e.target.value)}/>{' '}
                               {s.name}
                             </Label>
                             <Input className="service-price" value={s.price} disabled/>
@@ -370,9 +381,9 @@ export default class Reservations extends React.Component {
             </div>
             <ModalFooter>
               { this.state.openedModal == 'editModal' &&
-              <button className='btn btn-block btn-danger reservation-btn' onClick={this.handleDeleteReservation}>
-                Видалити
-              </button>}
+                <button className='btn btn-block btn-danger reservation-btn' onClick={this.handleDeleteReservation}>
+                  Видалити
+                </button>}
               <button className='btn btn-block btn-outline-info reservation-btn' onClick={this.handleSubmitReservation}>{this.state.openedModal == 'createModal' ? 'Створити' : 'Редагувати'}</button>
             </ModalFooter>
           </div>
