@@ -8,6 +8,8 @@ class User < ApplicationRecord
 
   has_many :reservations
 
+  validates_presence_of :name, :email, :phone
+
   def update_without_password(params, *options)
     if params[:password].blank?
       params.delete(:password)
