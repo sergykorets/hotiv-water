@@ -245,6 +245,19 @@ export default class Reservations extends React.Component {
     })
   };
 
+  eventStyleGetter(event, start, end, isSelected) {
+    let hexColor = '';
+    if (event.status === 'paid') {
+      hexColor = '#0daf46'
+    } else if (event.status === 'not_paid') {
+      hexColor = '#bf1515'
+    } else if (event.status === 'partialy_paid') {
+      hexColor = '#e4b60d'
+    }
+    const style = { backgroundColor: hexColor };
+    return { style: style };
+  }
+
   render() {
     const localizer = momentLocalizer(moment);
     const dates = this.state.reservations.map((r,i) => {
@@ -266,6 +279,7 @@ export default class Reservations extends React.Component {
           startAccessor="start"
           endAccessor="end"
           style={{ height: 1100 }}
+          eventPropGetter={(this.eventStyleGetter)}
         />
         <i className="fa fa-plus-circle" onClick={() => this.handleModal('createModal')} style={{position: 'fixed', bottom: 50, right: 50, fontSize: 200+'px'}}/>
         <Modal isOpen={this.state.openedModal.length > 0} toggle={() => this.handleModal('')}>
