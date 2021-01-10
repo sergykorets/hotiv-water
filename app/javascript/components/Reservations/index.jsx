@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, Children} from 'react';
 import { Modal, ModalHeader, ModalFooter, FormGroup, Label, Input, ButtonToggle, Tooltip } from 'reactstrap';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { Calendar, momentLocalizer } from 'react-big-calendar'
@@ -265,6 +265,16 @@ export default class Reservations extends React.Component {
       r.end   = new Date(r.end)
       return r;
     });
+
+    const ColoredDateCellWrapper = ({children, value}) => {
+      return React.cloneElement(Children.only(children), {
+        style: {
+          ...children.style,
+          backgroundColor: !(value.getDay() % 6) ? 'rgb(222 19 19 / 15%)' : '',
+        },
+      });
+    };
+
     return (
       <div style={{marginTop: '150'+'px', padding: 10+'px'}}>
         <NotificationContainer/>
@@ -280,6 +290,7 @@ export default class Reservations extends React.Component {
           endAccessor="end"
           style={{ height: 1100 }}
           eventPropGetter={(this.eventStyleGetter)}
+          components={{ dateCellWrapper: ColoredDateCellWrapper }}
         />
         <i className="fa fa-plus-circle" onClick={() => this.handleModal('createModal')} style={{position: 'fixed', bottom: 50, right: 50, fontSize: 200+'px'}}/>
         <Modal isOpen={this.state.openedModal.length > 0} toggle={() => this.handleModal('')}>
@@ -330,21 +341,21 @@ export default class Reservations extends React.Component {
                 <label><strong>Статус</strong></label>
                 <hr/>
                 <FormGroup tag="fieldset">
-                  <FormGroup className={this.state.selectedReservation.status === 'paid' ? 'checked-service' : ''} check>
+                  <FormGroup style={this.state.selectedReservation.status === 'paid' ? {backgroundColor: '#0daf46'} : {}} check>
                     <Label check>
                       <Input type="radio" name="status" value='paid' checked={this.state.selectedReservation.status === 'paid'} onChange={(e) => this.handleReservationChange('status', e.target.value)} />{' '}
                       Оплачено
                     </Label>
                   </FormGroup>
                   <hr/>
-                  <FormGroup className={this.state.selectedReservation.status === 'not_paid' ? 'checked-service' : ''} check>
+                  <FormGroup style={this.state.selectedReservation.status === 'not_paid' ? {backgroundColor: '#bf1515'} : {}} check>
                     <Label check>
                       <Input type="radio" name="status" value='not_paid' checked={this.state.selectedReservation.status === 'not_paid'} onChange={(e) => this.handleReservationChange('status', e.target.value)}/>{' '}
                       Не оплачено
                     </Label>
                   </FormGroup>
                   <hr/>
-                  <FormGroup className={this.state.selectedReservation.status === 'partialy_paid' ? 'checked-service' : ''} check>
+                  <FormGroup style={this.state.selectedReservation.status === 'partialy_paid' ? {backgroundColor: '#e4b60d'} : {}} check>
                     <Label check>
                       <Input type="radio" name="status" value='partialy_paid' checked={this.state.selectedReservation.status === 'partialy_paid'} onChange={(e) => this.handleReservationChange('status', e.target.value)}/>{' '}
                       Частково оплачено
