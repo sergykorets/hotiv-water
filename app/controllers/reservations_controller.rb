@@ -114,7 +114,7 @@ class ReservationsController < ApplicationController
   end
 
   def table
-    @reservations = Reservation.for_dates(params[:start_date].try(:to_datetime).try(:beginning_of_day), params[:end_date].try(:to_datetime).try(:end_of_day)).map do |reservation|
+    @reservations = Reservation.for_status(params[:status]).for_dates(params[:start_date].try(:to_datetime).try(:beginning_of_day), params[:end_date].try(:to_datetime).try(:end_of_day)).map do |reservation|
       { id: reservation.id,
         title: reservation.user.name,
         description: reservation.description,
@@ -134,6 +134,7 @@ class ReservationsController < ApplicationController
     end
     @services = Service.all.map {|s| {id: s.id, name: s.name, price: s.price}}
     @users = User.all.map { |user| {label: user.name, value: user.id} }
+    @statuses = Reservation.statuses
     respond_to do |format|
       format.html { render :table }
       format.json {{reservations: @reservations}}

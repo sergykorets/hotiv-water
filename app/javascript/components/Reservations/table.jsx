@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import { Modal, ModalHeader, FormGroup, Label, Input, ButtonToggle } from 'reactstrap';
+import { FormGroup, Label, Input } from 'reactstrap';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import AirBnbPicker from '../common/AirBnbPicker';
 import moment from "moment";
@@ -10,26 +10,17 @@ export default class Table extends React.Component {
 
     this.state = {
       actions: this.props.reservations,
-      openedModal: '',
-      selectedAction: '',
       startDate: moment().clone().startOf('month').format('DD.MM.YYYY'),
       endDate: moment().clone().endOf('month').format('DD.MM.YYYY')
     };
   }
-
-  handleModal = (modal, index) => {
-    this.setState({
-      ...this.state,
-      openedModal: modal,
-      selectedAction: index
-    })
-  };
 
   handleDateChange = ({startDate, endDate}) => {
     $.ajax({
       url: '/table.json',
       type: 'GET',
       data: {
+        status: this.state.status,
         start_date: startDate.format('DD.MM.YYYY'),
         end_date: endDate.format('DD.MM.YYYY')
       },
@@ -52,11 +43,57 @@ export default class Table extends React.Component {
     return (sumArray.reduce((a, b) => a + b, 0)).toFixed(2)
   };
 
+  status = (status) => {
+    const translations = {
+      paid: {translate: 'Оплачено', color: '#0daf46'},
+      not_paid: {translate: 'Не оплачено', color: '#bf1515'},
+      partialy_paid: {translate: 'Частково оплачено', color: '#e4b60d'},
+      free: {translate: 'Безкоштовно', color: 'white'},
+    };
+    const merged = Object.assign(this.props.statuses, translations);
+    return merged[status] || '';
+  };
+
+  handleStatusChange = (status) => {
+    $.ajax({
+      url: '/table.json',
+      type: 'GET',
+      data: {
+        status: status,
+        start_date: this.state.startDate,
+        end_date: this.state.endDate
+      },
+      success: (resp) => {
+        this.setState({
+          ...this.state,
+          actions: resp.reservations,
+          status: status
+        });
+      }
+    });
+  };
+
   render() {
     return (
       <div className='container page-content' style={{color: 'black'}}>
         <NotificationContainer/>
-        <h1>Записи</h1>
+        <div className="row">
+          <div className="col-6">
+            <h1>Записи</h1>
+          </div>
+          <div className="col-6">
+            <FormGroup className='mt-3'>
+              <Input type="select" name="status" id="status" onChange={(e) => this.handleStatusChange(e.target.value)}>
+                <option value=''>Всі записи</option>
+                { Object.keys(this.props.statuses).map((status, i) => {
+                  return (
+                    <option key={i} value={status}>{this.status(status) && this.status(status)['translate']}</option>
+                  )}
+                )}
+              </Input>
+            </FormGroup>
+          </div>
+        </div>
         <hr/>
         <div className='date-header'>
           <h1>{this.summary()}<span className='uah'>₴</span></h1>
@@ -74,55 +111,33 @@ export default class Table extends React.Component {
           <tr>
             <th><h1>Клієнт</h1></th>
             <th><h1>Сума</h1></th>
-            <th><h1>Дата</h1></th>
+            <th><h1>Статус</h1></th>
             <th><h1>Послуги</h1></th>
+            <th><h1>Дата</h1></th>
           </tr>
           </thead>
           <tbody>
           { this.state.actions.map((action, i) => {
             return (
               <tr key={i}>
-                <td><a href={`/users?id=${action.user.id}`}>{action.user.name}</a></td>
+                <td><a style={{color: '#FB667A'}} href={`/users?id=${action.user.id}`}>{action.user.name}</a></td>
                 <td>{action.price}<span className='uah'>₴</span></td>
-                <td>{action.created_at}</td>
+                <td style={{color: this.status(action.status) && this.status(action.status)['color']}}>{this.status(action.status) && this.status(action.status)['translate']}</td>
                 <td>
-                  <ButtonToggle color="primary" size="sm" onClick={() => this.handleModal('actionModal', i)}>Деталі</ButtonToggle>
+                  { action.services.map((s, i) => {
+                    return (
+                      <p style={{color: '#FB667A'}} key={i}>
+                        {s.name}
+                      </p>
+                    )
+                  })}
                 </td>
+                <td>{action.created_at}</td>
               </tr>
             )
           })}
           </tbody>
         </table>
-        <br/>
-
-        { (this.state.openedModal === 'actionModal') &&
-        <Modal isOpen={this.state.openedModal === 'actionModal'} toggle={() => this.handleModal('')} size="lg" className='show-action-details'>
-          <div className='container'>
-            <ModalHeader>Послуги</ModalHeader>
-            <table className='dark' style={{marginTop: 20 + 'px'}}>
-              <thead>
-              <tr>
-                <th><h1>Назва</h1></th>
-                <th><h1>Дата</h1></th>
-              </tr>
-              </thead>
-              <tbody>
-              { this.state.actions[this.state.selectedAction].services.map((s, i) => {
-                return (
-                  <tr key={i}>
-                    <td>{s.name}</td>
-                    <td>{this.state.actions[this.state.selectedAction].created_at}</td>
-                  </tr>
-                )
-              })}
-              </tbody>
-            </table>
-            <h1>Всього: {this.state.actions[this.state.selectedAction].price}<span className='uah'>₴</span></h1>
-            <FormGroup>
-              <ButtonToggle color="secondary" onClick={() => this.handleModal('')}>Закрити</ButtonToggle>
-            </FormGroup>
-          </div>
-        </Modal>}
       </div>
     );
   }

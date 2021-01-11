@@ -28,6 +28,17 @@ export default class Users extends React.Component {
     })
   };
 
+  status = (status) => {
+    const translations = {
+      paid: {translate: 'Оплачено', color: '#0daf46'},
+      not_paid: {translate: 'Не оплачено', color: '#bf1515'},
+      partialy_paid: {translate: 'Частково оплачено', color: '#e4b60d'},
+      free: {translate: 'Безкоштовно', color: 'white'},
+    };
+    const merged = Object.assign(this.props.statuses, translations);
+    return merged[status] || '';
+  };
+
   render() {
     return (
       <div className='container page-content' style={{color: 'black'}}>
@@ -73,6 +84,7 @@ export default class Users extends React.Component {
               <tr>
                 <th><h1>Послуги</h1></th>
                 <th><h1>Сума</h1></th>
+                <th><h1>Статус</h1></th>
                 <th><h1>Дата</h1></th>
               </tr>
               </thead>
@@ -90,6 +102,7 @@ export default class Users extends React.Component {
                       })}
                     </td>
                     <td>{action.price}<span className='uah'>₴</span></td>
+                    <td style={{color: this.status(action.status) && this.status(action.status)['color']}}>{this.status(action.status) && this.status(action.status)['translate']}</td>
                     <td>{action.start}</td>
                   </tr>
                 )

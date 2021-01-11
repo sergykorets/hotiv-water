@@ -13,6 +13,7 @@ class UsersController < ApplicationController
       }
     end
     set_user if params[:id]
+    @statuses = Reservation.statuses
     respond_to do |format|
       format.html { render :index }
       format.json {{users: @users }}

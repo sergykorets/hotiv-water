@@ -11,6 +11,7 @@ class Reservation < ApplicationRecord
 
   scope :current_month, -> {where('start_date < ? AND end_date > ?', DateTime.now.end_of_month, DateTime.now.beginning_of_month).order('start_date DESC')}
   scope :for_dates, -> (start_date, end_date) {where('start_date <= ? AND end_date >= ?', end_date || DateTime.now.end_of_month, start_date || DateTime.now.beginning_of_month).order('start_date DESC')}
+  scope :for_status, -> (status) {where(status: status) if status.present?}
 
   private
 
