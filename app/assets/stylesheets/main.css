@@ -656,6 +656,7 @@ label {
 /* line 19, ../scss/modules/_forms.scss */
 input, textarea {
     padding: 10px 5px;
+    font-size: 30px !important;
 }
 
 /* line 26, ../scss/modules/_forms.scss */
