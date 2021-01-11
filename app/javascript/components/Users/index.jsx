@@ -85,6 +85,7 @@ export default class Users extends React.Component {
                 <th><h1>Послуги</h1></th>
                 <th><h1>Сума</h1></th>
                 <th><h1>Статус</h1></th>
+                <th><h1>Нотатки</h1></th>
                 <th><h1>Дата</h1></th>
               </tr>
               </thead>
@@ -103,6 +104,7 @@ export default class Users extends React.Component {
                     </td>
                     <td>{action.price}<span className='uah'>₴</span></td>
                     <td style={{color: this.status(action.status) && this.status(action.status)['color']}}>{this.status(action.status) && this.status(action.status)['translate']}</td>
+                    <td style={{maxWidth: 200+'px', lineBreak: 'anywhere'}}>{action.description}</td>
                     <td>{action.start}</td>
                   </tr>
                 )

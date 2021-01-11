@@ -113,6 +113,7 @@ export default class Table extends React.Component {
             <th><h1>Сума</h1></th>
             <th><h1>Статус</h1></th>
             <th><h1>Послуги</h1></th>
+            <th><h1>Нотатки</h1></th>
             <th><h1>Дата</h1></th>
           </tr>
           </thead>
@@ -132,6 +133,7 @@ export default class Table extends React.Component {
                     )
                   })}
                 </td>
+                <td style={{maxWidth: 200+'px', lineBreak: 'anywhere'}}>{action.description}</td>
                 <td>{action.created_at}</td>
               </tr>
             )
