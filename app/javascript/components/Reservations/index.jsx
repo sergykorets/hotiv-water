@@ -314,7 +314,7 @@ export default class Reservations extends React.Component {
                     <label><strong>Дата</strong></label>
                     <AirBnbPicker
                       single={true}
-                      pastDates={false}
+                      pastDates={true}
                       onPickerApply={this.handleDateChange}
                       date={this.state.selectedReservation.date}
                     />
