@@ -21,6 +21,7 @@ export default class Reservations extends React.Component {
       selectedDate: new Date(),
       notices: {},
       view: 'month',
+      holidays: this.props.holidays,
       selectedReservation: {
         user: {},
         status: '',
@@ -82,7 +83,8 @@ export default class Reservations extends React.Component {
       success: (resp) => {
         this.setState({
           ...this.state,
-          reservations: resp.reservations
+          reservations: resp.reservations,
+          holidays: resp.holidays
         })
       }
     });
@@ -158,7 +160,7 @@ export default class Reservations extends React.Component {
               price: '',
               services: this.props.services.reduce((obj, item) => (obj[item.id] = false, obj), {})
             }
-          })
+          });
           NotificationManager.success(resp.update ? 'Запис відредаговано' : 'Запис створено');
         } else {
           NotificationManager.error(resp.error, resp.update ? 'Неможливо відредагувати' : 'Неможливо створити');
@@ -216,7 +218,7 @@ export default class Reservations extends React.Component {
               price: '',
               services: this.props.services.reduce((obj, item) => (obj[item.id] = false, obj), {})
             }
-          })
+          });
           NotificationManager.success('Запис видалено');
         } else {
           NotificationManager.error(resp.error, 'Неможливо видалити');
@@ -300,7 +302,7 @@ export default class Reservations extends React.Component {
       return React.cloneElement(Children.only(children), {
         style: {
           ...children.style,
-          backgroundColor: this.props.holidays.includes(moment(value).format('DD.MM.YYYY')) ? 'rgb(222 19 19 / 15%)' : '',
+          backgroundColor: this.state.holidays.includes(moment(value).format('DD.MM.YYYY')) ? 'rgb(222 19 19 / 15%)' : '',
         },
       });
     };
