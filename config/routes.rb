@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   resources :actions, only: [:index, :create, :edit, :update, :destroy]
   resources :reservations
   resources :users, only: [:index, :show]
+  resources :notices, only: [:index, :create, :destroy]
 
   get '/table', to: 'reservations#table'
   get '/sell', to: 'pages#sell'

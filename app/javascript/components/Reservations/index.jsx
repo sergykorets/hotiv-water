@@ -5,6 +5,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import Select from 'react-select'
 import AirBnbPicker from "../common/AirBnbPicker";
+import Notice from "../common/Notice";
 import TimeRange from 'react-time-range';
 
 export default class Reservations extends React.Component {
@@ -17,6 +18,9 @@ export default class Reservations extends React.Component {
       users: this.props.users,
       reservations: this.props.reservations,
       openedModal: '',
+      selectedDate: new Date(),
+      notices: {},
+      view: 'month',
       selectedReservation: {
         user: {},
         status: '',
@@ -258,6 +262,32 @@ export default class Reservations extends React.Component {
     return { style: style };
   }
 
+  changeDay = (date) => {
+    this.setState({ selectedDate: date })
+  };
+
+  changeView = (view) => {
+    this.setState({ view: view })
+  };
+
+  handleNotices = () => {
+    $.ajax({
+      url: `notices.json`,
+      type: 'GET',
+      dataType: 'JSON',
+      data: {
+        date: moment(this.state.selectedDate).format('DD.MM.YYYY'),
+      },
+      success: (resp) => {
+        this.setState({
+          ...this.state,
+          notices: resp.notices,
+          openedModal: 'noticeModal'
+        })
+      }
+    });
+  };
+
   render() {
     const localizer = momentLocalizer(moment);
     const dates = this.state.reservations.map((r,i) => {
@@ -289,11 +319,14 @@ export default class Reservations extends React.Component {
           startAccessor="start"
           endAccessor="end"
           style={{ height: 1100 }}
-          eventPropGetter={(this.eventStyleGetter)}
+          eventPropGetter={this.eventStyleGetter}
           components={{ dateCellWrapper: ColoredDateCellWrapper }}
+          onView={this.changeView}
+          onNavigate={this.changeDay}
         />
-        <i className="fa fa-plus-circle" onClick={() => this.handleModal('createModal')} style={{position: 'fixed', bottom: 50, right: 50, fontSize: 200+'px'}}/>
-        <Modal isOpen={this.state.openedModal.length > 0} toggle={() => this.handleModal('')}>
+        <i className="fa fa-plus-circle" onClick={() => this.handleModal('createModal')} style={{position: 'fixed', bottom: 50, right: 50, fontSize: 200+'px', zIndex: 2}}/>
+        { this.state.view === 'day' && <i className="fa fa-clipboard" onClick={() => this.handleNotices()} style={{position: 'fixed', bottom: 50, left: 50, fontSize: 200+'px', zIndex: 2}}/>}
+        <Modal isOpen={['createModal', 'editModal'].includes(this.state.openedModal)} toggle={() => this.handleModal('')}>
           <div className="container">
             <ModalHeader toggle={() => this.handleModal('')}>
               <span style={{width: 555+'px'}}><strong>Запис на прийом</strong></span>
@@ -413,6 +446,16 @@ export default class Reservations extends React.Component {
             </ModalFooter>
           </div>
         </Modal>
+        { this.state.view === 'day' &&
+          <Modal isOpen={this.state.openedModal === 'noticeModal'} toggle={() => this.handleModal('')}>
+            <div className="container">
+              <ModalHeader toggle={() => this.handleModal('')}>
+                <span><strong>Нотатки ({moment(this.state.selectedDate).format('DD.MM.YYYY')})</strong></span>
+                <i className="fa fa-times" onClick={() => this.handleModal('')}/>
+              </ModalHeader>
+              <Notice notices={this.state.notices} date={this.state.selectedDate}/>
+            </div>
+          </Modal>}
       </div>
     );
   }

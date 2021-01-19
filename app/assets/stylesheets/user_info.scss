@@ -517,9 +517,10 @@
     width: 30%;
   }
 }
-.reservation-form {
-  height: calc(100vh - 275px);
-  overflow-y: scroll;
+.rbc-month-view, .rbc-time-view {
+  margin-top: 70px;
+  overflow: hidden !important;
+  z-index: 1;
 }
 .rbc-toolbar {
   font-size: 30px !important;
@@ -548,4 +549,19 @@ label {
 }
 select {
   font-size: 30px !important;
+}
+.rbc-toolbar {
+  position: fixed;
+  top: 120px;
+  background-color: white;
+  padding: 20px;
+  z-index: 2;
+  .rbc-btn-group:first-child {
+    button:first-child {
+      display: none;
+    }
+  }
+  //.rbc-btn-group:last-child {
+  //  display: none;
+  //}
 }
