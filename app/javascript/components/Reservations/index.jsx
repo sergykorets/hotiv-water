@@ -300,7 +300,7 @@ export default class Reservations extends React.Component {
       return React.cloneElement(Children.only(children), {
         style: {
           ...children.style,
-          backgroundColor: !(value.getDay() % 6) ? 'rgb(222 19 19 / 15%)' : '',
+          backgroundColor: this.props.holidays.includes(moment(value).format('DD.MM.YYYY')) ? 'rgb(222 19 19 / 15%)' : '',
         },
       });
     };

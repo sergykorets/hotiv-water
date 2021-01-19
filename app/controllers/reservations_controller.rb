@@ -23,6 +23,7 @@ class ReservationsController < ApplicationController
     end
     @services = Service.all.map {|s| {id: s.id, name: s.name, price: s.price}}
     @users = User.all.map { |user| {label: user.name, value: user.id} }
+    @holidays = Holiday.for_dates(params[:start_date].try(:to_datetime).try(:beginning_of_day), params[:end_date].try(:to_datetime).try(:end_of_day)).map { |day| day.date.strftime('%d.%m.%Y') }
     respond_to do |format|
       format.html { render :index }
       format.json {{reservations: @reservations, services: @services }}
