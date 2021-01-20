@@ -20,6 +20,7 @@ export default class Reservations extends React.Component {
       openedModal: '',
       selectedDate: new Date(),
       notices: {},
+      notices_dates: this.props.notices_counts,
       view: 'month',
       holidays: this.props.holidays,
       selectedReservation: {
@@ -299,10 +300,12 @@ export default class Reservations extends React.Component {
     });
 
     const ColoredDateCellWrapper = ({children, value}) => {
+      const hasNotices = this.state.notices_dates.includes(moment(value).format('DD.MM.YYYY'));
       return React.cloneElement(Children.only(children), {
         style: {
           ...children.style,
           backgroundColor: this.state.holidays.includes(moment(value).format('DD.MM.YYYY')) ? 'rgb(222 19 19 / 15%)' : '',
+          border: hasNotices ? '1px solid green' : ''
         },
       });
     };

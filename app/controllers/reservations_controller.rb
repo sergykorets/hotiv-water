@@ -21,6 +21,7 @@ class ReservationsController < ApplicationController
         services: reservation.services.map { |service| { id: service.id, name: service.name, price: service.price } }
       }
     end
+    @notices_counts = Notice.for_dates(params[:start_date].try(:to_datetime).try(:beginning_of_day), params[:end_date].try(:to_datetime).try(:end_of_day)).group(:date).count.keys.map {|d| d.strftime("%d.%m.%Y")}
     @services = Service.all.map {|s| {id: s.id, name: s.name, price: s.price}}
     @users = User.all.map { |user| {label: user.name, value: user.id} }
     @holidays = Holiday.for_dates(params[:start_date].try(:to_datetime).try(:beginning_of_day), params[:end_date].try(:to_datetime).try(:end_of_day)).map { |day| day.date.strftime('%d.%m.%Y') }
