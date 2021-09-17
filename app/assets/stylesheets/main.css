@@ -75,7 +75,7 @@ body {
 
 /* line 9, ../scss/base/_base.scss */
 a {
-    color: white;
+    color: black !important;
 }
 
 /* line 13, ../scss/base/_base.scss */
