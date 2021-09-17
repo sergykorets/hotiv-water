@@ -75,7 +75,7 @@ body {
 
 /* line 9, ../scss/base/_base.scss */
 a {
-    color: black !important;
+    color: white;
 }
 
 /* line 13, ../scss/base/_base.scss */
@@ -879,4 +879,7 @@ label.local-error {
 }
 .notification-container {
     width: 600px;
+}
+.phone {
+    color: black;
 }

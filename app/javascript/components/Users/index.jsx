@@ -61,7 +61,7 @@ export default class Users extends React.Component {
                       <div className="rela-block profile-name-container">
                         <div className="rela-block user-name" id="user_name">{this.state.user.name}</div>
                         <div className="rela-block user-desc" id="user_description">
-                          <a href={`tel:${this.state.user.phone}`}>{this.state.user.phone}</a>
+                          <a className='phone' href={`tel:${this.state.user.phone}`}>{this.state.user.phone}</a>
                         </div>
                       </div>
                       <div className="rela-block profile-card-stats">
