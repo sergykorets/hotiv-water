@@ -10,77 +10,46 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210107100555) do
+ActiveRecord::Schema.define(version: 20211201095019) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "actions", force: :cascade do |t|
-    t.decimal "amount"
+  create_table "consumptions", force: :cascade do |t|
+    t.decimal "water"
+    t.decimal "water_price"
+    t.decimal "sewerage_price", default: "0.0"
+    t.integer "status", default: 0
+    t.datetime "date"
+    t.integer "flat_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.index ["flat_id"], name: "index_consumptions_on_flat_id"
   end
 
-  create_table "categories", force: :cascade do |t|
+  create_table "flats", force: :cascade do |t|
     t.string "name"
-    t.decimal "multiplier"
-  end
-
-  create_table "product_actions", force: :cascade do |t|
-    t.integer "action_id"
-    t.integer "product_id"
-    t.integer "action_type"
-    t.decimal "quantity"
-    t.decimal "buy_price"
-    t.decimal "sell_price"
+    t.string "owner"
+    t.string "phone"
+    t.integer "house_id"
+    t.boolean "sewerage", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["action_id"], name: "index_product_actions_on_action_id"
-    t.index ["product_id"], name: "index_product_actions_on_product_id"
+    t.index ["house_id"], name: "index_flats_on_house_id"
   end
 
-  create_table "products", force: :cascade do |t|
+  create_table "houses", force: :cascade do |t|
     t.string "name"
-    t.text "description"
-    t.string "barcode"
-    t.decimal "quantity"
-    t.decimal "buy_price"
-    t.decimal "sell_price"
-    t.integer "category_id"
+    t.boolean "sewerage", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "due_date"
-    t.string "picture_file_name"
-    t.string "picture_content_type"
-    t.integer "picture_file_size"
-    t.datetime "picture_updated_at"
-    t.index ["category_id"], name: "index_products_on_category_id"
   end
 
-  create_table "reservations", force: :cascade do |t|
-    t.integer "user_id"
-    t.datetime "start_date"
-    t.datetime "end_date"
-    t.jsonb "services"
-    t.integer "status"
-    t.string "description"
-    t.integer "price"
-  end
-
-  create_table "reservations_services", id: false, force: :cascade do |t|
-    t.bigint "reservation_id", null: false
-    t.bigint "service_id", null: false
-    t.index ["reservation_id", "service_id"], name: "index_reservations_services_on_reservation_id_and_service_id"
-  end
-
-  create_table "services", force: :cascade do |t|
-    t.string "name"
-    t.integer "price"
-  end
-
-  create_table "settings", force: :cascade do |t|
-    t.string "working_phone"
+  create_table "prices", force: :cascade do |t|
+    t.decimal "water_price"
+    t.decimal "sewerage_price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
@@ -98,20 +67,8 @@ ActiveRecord::Schema.define(version: 20210107100555) do
     t.inet "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "phone"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-  end
-
-  create_table "versions", force: :cascade do |t|
-    t.string "item_type", null: false
-    t.bigint "item_id", null: false
-    t.string "event", null: false
-    t.string "whodunnit"
-    t.text "object"
-    t.datetime "created_at"
-    t.text "object_changes"
-    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
 end

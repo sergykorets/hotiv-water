@@ -9,6 +9,10 @@ import EditAction from '../components/Actions/edit';
 import Reservations from '../components/Reservations';
 import Table from '../components/Reservations/table';
 import Users from '../components/Users';
+import Houses from '../components/Houses';
+import House from '../components/Houses/show';
+import Flat from '../components/Flats/show';
+import Price from '../components/Price';
 
 // This is how react_on_rails can see the HelloWorld in the browser.
 ReactOnRails.register({
@@ -21,5 +25,9 @@ ReactOnRails.register({
   EditAction,
   Reservations,
   Table,
-  Users
+  Users,
+  Houses,
+  House,
+  Flat,
+  Price
 });

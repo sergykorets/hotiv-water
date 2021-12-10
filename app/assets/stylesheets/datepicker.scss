@@ -884,3 +884,16 @@
     width: 15px;
     fill: #cacccd
 }
+td.rdtYear {
+    padding: 20px;
+}
+.rdt {
+    margin: 23px 0;
+}
+.disabled {
+    pointer-events: none;
+    input {
+        background: #e9ecef;
+        box-shadow: none;
+    }
+}

@@ -6,4 +6,4 @@ default: &default
 
 development:
   <<: *default
-  database: ira_nails_development
+  database: hotiv_development
