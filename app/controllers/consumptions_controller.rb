@@ -1,4 +1,5 @@
 class ConsumptionsController < ApplicationController
+  before_action :check_admin
   def create
     consumption = Consumption.new(consumption_params)
     consumption.with_lock do

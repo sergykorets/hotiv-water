@@ -1,5 +1,5 @@
 class PricesController < ApplicationController
-
+  before_action :check_admin
   def index
     @price = Price.first
     respond_to do |format|

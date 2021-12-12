@@ -1,5 +1,5 @@
 class FlatsController < ApplicationController
-
+  before_action :check_admin
   def index
     @houses = House.all
     respond_to do |format|

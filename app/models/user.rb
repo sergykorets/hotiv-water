@@ -4,7 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  enum role: [:client, :admin]
+  enum role: [:default, :client, :admin]
 
   validates_presence_of :name, :email
 

@@ -1,5 +1,5 @@
 class HousesController < ApplicationController
-
+  before_action :check_admin
   def index
     @houses = House.all.order(:created_at)
     respond_to do |format|
