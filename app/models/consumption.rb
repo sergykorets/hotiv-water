@@ -10,7 +10,7 @@ class Consumption < ApplicationRecord
   before_save :set_prices, if: :water_changed?
   before_validation :check_previous, if: -> { water_changed? || date_changed? }
 
-  scope :for_year, ->(year) { where(date: DateTime.new(year.to_i || Time.new.year).beginning_of_year..DateTime.new(year.to_i || Time.new.year).end_of_year) if year.present? }
+  scope :for_year, ->(year) { where(date: DateTime.new(year.try(:to_i) || Time.new.year).beginning_of_year..DateTime.new(year.try(:to_i) || Time.new.year).end_of_year) }
 
   def set_prices
     except_current = flat.consumptions.where.not(id: id)
