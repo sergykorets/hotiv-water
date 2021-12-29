@@ -194,12 +194,12 @@ export default class show extends React.Component {
           { this.state.consumptions.map((consumption, i) => {
             return (
               <tr key={i}>
-                <td>{parseInt(consumption.water)}</td>
-                <td>{parseInt(consumption.water_price)} ₴</td>
-                <td>{parseInt(consumption.sewerage_price)} ₴</td>
+                <td>{parseFloat(consumption.water)}</td>
+                <td>{parseFloat(consumption.water_price)} ₴</td>
+                <td>{parseFloat(consumption.sewerage_price)} ₴</td>
                 <td style={{color: consumption.status == 'paid' ? 'green' : 'red'}}>{statusNames[consumption.status]}</td>
                 <td>{monthNames[parseInt(consumption.date.split("-")[1],  10) - 1]}</td>
-                <td>{parseInt(consumption.water_price) + parseInt(consumption.sewerage_price)} ₴</td>
+                <td>{parseFloat(consumption.water_price) + parseFloat(consumption.sewerage_price)} ₴</td>
                 <td>
                   <ButtonToggle color="warning" size="sm" onClick={() => this.handleModal('editConsumption', i)}>
                     Змінити
