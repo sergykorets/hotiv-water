@@ -147,7 +147,7 @@ export default class show extends React.Component {
         <NotificationContainer/>
         <hr/>
         <h1 style={{marginBottom: 20+'px'}}>
-          <a className='phone' href={`/houses/${this.props.house.id}`}>Будинок {this.props.house.name}</a> - Квартира {this.state.flat.name}
+          <a className='phone' href={`/houses/${this.props.house.id}`}>{this.props.house.name}</a> - {this.state.flat.name}
         </h1>
         <hr/>
         <div className='row'>
